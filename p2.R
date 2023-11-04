@@ -75,7 +75,8 @@ library(themis)
 
 set.seed(3312)
 id <- initial_split(data = df,
-                    strata = loan_status)
+                    strata = loan_status,
+                    prop = 0.7)
 
 train <- training(id)
 test <- testing(id)
@@ -120,7 +121,24 @@ mod_arbolito_pro <- finalize_workflow(x = w_arbol,
 
 saveRDS(mod_arbolito_pro, file = "modelos/arbol.rds")
 
+rattle::fancyRpartPlot(mod_arbolito_pro$fit$fit$fit)
 
 # Random Forest -----------------------------------------------------------
 
+mod_rf <- rand_forest(mode = "classification",
+                      trees = tune(),
+                      min_n = tune()) %>% 
+  set_engine("ranger")
 
+w_bosque <- workflow() %>% 
+  add_recipe(proc) %>% 
+  add_model(mod_rf)
+
+hp_bosque <- extract_parameter_set_dials(mod_rf) %>%
+  grid_regular(levels = list(trees = 5, min_n = 3))
+
+grilla_bosque <- tune_grid(object = w_bosque,
+                           resamples = cv,
+                           metrics = metric_set(roc_auc),
+                           control = control_grid(verbose = TRUE),
+                           grid = hp_bosque)
