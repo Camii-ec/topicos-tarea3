@@ -1,0 +1,20 @@
+---
+title: "Tarea 3"
+subtitle: "EYP3407 - Tópicos Aplicados en estadística"
+author: 
+    - Camila Echeverría
+    - Francisca Vilca
+format:
+    html:
+        code-fold: false
+        embed-resources: true
+        toc: true
+        toc-title: "Contenidos"
+---
+
+## Pregunta 1
+
+
+
+## Pregunta 2
+
